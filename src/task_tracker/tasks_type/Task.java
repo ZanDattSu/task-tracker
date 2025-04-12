@@ -1,4 +1,4 @@
-package task_tracker;
+package task_tracker.tasks_type;
 
 import java.util.Objects;
 
@@ -54,7 +54,7 @@ public class Task {
     }
 
 
-    protected void setStatus(Status status) {
+    public void setStatus(Status status) {
         this.status = status;
     }
 

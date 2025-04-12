@@ -1,6 +1,7 @@
-package task_tracker;
+package task_tracker.tasks_type;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class Epic extends Task {
 
@@ -46,4 +47,16 @@ public class Epic extends Task {
                 "}";
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        Epic epic = (Epic) o;
+        return Objects.equals(subtasks, epic.subtasks);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), subtasks);
+    }
 }

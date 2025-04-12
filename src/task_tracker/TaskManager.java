@@ -1,5 +1,9 @@
 package task_tracker;
 
+import task_tracker.tasks_type.Epic;
+import task_tracker.tasks_type.Subtask;
+import task_tracker.tasks_type.Task;
+
 import java.util.ArrayList;
 
 public interface TaskManager {
