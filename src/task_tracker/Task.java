@@ -1,0 +1,90 @@
+package task_tracker;
+
+import java.util.Objects;
+
+public class Task {
+    private String name;
+    private String description;
+    private Status status;
+    private Integer id;
+
+    public Task() {
+    }
+
+    public Task(Task task) {
+        this.name = task.getName();
+        this.description = task.getDescription();
+        this.status = task.getStatus();
+        this.id = task.getID();
+    }
+
+    public Task(String name, Integer id) {
+        this(name, null, Status.NEW, id);
+    }
+
+    public Task(String name, String description, Integer id) {
+        this(name, description, Status.NEW, id);
+    }
+
+    public Task(String name, String description, Status status, Integer id) {
+        this.name = name;
+        this.description = description;
+        this.status = status;
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+
+    protected void setStatus(Status status) {
+        this.status = status;
+    }
+
+    public Integer getID() {
+        return id;
+    }
+
+    public void setID(Integer id) {
+        this.id = id;
+    }
+
+    @Override
+    public String toString() {
+        return "Task{" +
+                name +
+                ", " + description +
+                ", " + id +
+                ", " + status +
+                "}";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Task task = (Task) o;
+        return Objects.equals(name, task.name) && Objects.equals(description, task.description) && status == task.status && Objects.equals(id, task.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, description, status, id);
+    }
+}
