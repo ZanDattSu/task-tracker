@@ -6,8 +6,8 @@ import task_tracker.tasks_type.Subtask;
 import task_tracker.tasks_type.Task;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.HashMap;
+import java.util.List;
 
 public class InMemoryTaskManager implements TaskManager {
     private Integer IDCounter = 0;
@@ -246,7 +246,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Epic removeEpic(int id) {
-        Epic epic = epics.get(id);;
+        Epic epic = epics.get(id);
         for (Subtask subtask : epic.getSubtasks()) {
             historyManager.remove(subtask.getID());
         }

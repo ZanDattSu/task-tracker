@@ -1,7 +1,5 @@
 package task_tracker;
 
-import task_tracker.tasks_type.Epic;
-import task_tracker.tasks_type.Subtask;
 import task_tracker.tasks_type.Task;
 
 import java.util.ArrayList;
@@ -24,7 +22,6 @@ public class InMemoryHistoryManager implements HistoryManager {
     private Node tail = null;
 
     private final HashMap<Integer, Node> nodes = new HashMap<>();
-    private static int nodesCount = 0;
 
 
     private void linkLast(Task task) {
