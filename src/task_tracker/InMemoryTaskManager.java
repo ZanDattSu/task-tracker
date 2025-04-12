@@ -6,17 +6,17 @@ import task_tracker.tasks_type.Subtask;
 import task_tracker.tasks_type.Task;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.HashMap;
 
 public class InMemoryTaskManager implements TaskManager {
+    private Integer IDCounter = 0;
+
     private final HashMap<Integer, Task> tasks = new HashMap<>();
-    private Integer counterTaskID = 0;
 
     private final HashMap<Integer, Subtask> subtasks = new HashMap<>();
-    private Integer counterSubtaskID = 0;
 
     private final HashMap<Integer, Epic> epics = new HashMap<>();
-    private Integer counterEpicID = 0;
 
     private final HistoryManager historyManager;
 
@@ -32,7 +32,7 @@ public class InMemoryTaskManager implements TaskManager {
     // Методы для класса Task
 
     @Override
-    public ArrayList<Task> getAllTasks() {
+    public List<Task> getAllTasks() {
         return new ArrayList<>(tasks.values());
     }
 
@@ -56,7 +56,7 @@ public class InMemoryTaskManager implements TaskManager {
                 task.getName(),
                 task.getDescription(),
                 task.getStatus(),
-                counterTaskID++
+                IDCounter++
         );
 
         if (!tasks.containsKey(newTask.getID())) {
@@ -77,6 +77,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Task removeTask(int id) {
+        historyManager.remove(id);
         return tasks.remove(id);
     }
 
@@ -84,7 +85,7 @@ public class InMemoryTaskManager implements TaskManager {
     // Методы для класса Subtask
 
     @Override
-    public ArrayList<Subtask> getAllSubtasks() {
+    public List<Subtask> getAllSubtasks() {
         return new ArrayList<>(subtasks.values());
     }
 
@@ -117,7 +118,7 @@ public class InMemoryTaskManager implements TaskManager {
                 subtask.getName(),
                 subtask.getDescription(),
                 subtask.getStatus(),
-                counterSubtaskID++,
+                IDCounter++,
                 epic.getID()
         );
         subtasks.put(newSubtask.getID(), newSubtask);
@@ -133,7 +134,7 @@ public class InMemoryTaskManager implements TaskManager {
                 subtask.getName(),
                 subtask.getDescription(),
                 subtask.getStatus(),
-                counterSubtaskID++,
+                IDCounter++,
                 epic.getID()
         );
         subtasks.put(newSubtask.getID(), newSubtask);
@@ -164,11 +165,12 @@ public class InMemoryTaskManager implements TaskManager {
             epic.removeSubtask(subtask);
             updateEpicStatus(epic);
         }
+        historyManager.remove(id);
         return subtasks.remove(id);
     }
 
     @Override
-    public ArrayList<Subtask> getSubtasks(Epic epic) {
+    public List<Subtask> getSubtasks(Epic epic) {
         return epic.getSubtasks();
     }
 
@@ -201,7 +203,7 @@ public class InMemoryTaskManager implements TaskManager {
     // Методы для класса Epic
 
     @Override
-    public ArrayList<Epic> getAllEpics() {
+    public List<Epic> getAllEpics() {
         return new ArrayList<>(epics.values());
     }
 
@@ -224,7 +226,7 @@ public class InMemoryTaskManager implements TaskManager {
         Epic newEpic = new Epic(
                 epic.getName(),
                 epic.getDescription(),
-                counterEpicID++
+                IDCounter++
         );
         if (!epics.containsKey(newEpic.getID())) {
             epics.put(newEpic.getID(), newEpic);
@@ -244,6 +246,11 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Epic removeEpic(int id) {
+        Epic epic = epics.get(id);;
+        for (Subtask subtask : epic.getSubtasks()) {
+            historyManager.remove(subtask.getID());
+        }
+        historyManager.remove(id);
         return epics.remove(id);
     }
 }

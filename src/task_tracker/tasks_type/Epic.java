@@ -12,6 +12,10 @@ public class Epic extends Task {
         this.subtasks = epic.getSubtasks();
     }
 
+    public Epic(String name) {
+        super(name, -1);
+    }
+
     public Epic(String name, Integer id) {
         super(name, id);
     }

@@ -4,13 +4,13 @@ import task_tracker.tasks_type.Epic;
 import task_tracker.tasks_type.Subtask;
 import task_tracker.tasks_type.Task;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public interface TaskManager {
     // Методы для класса Task
 
     // Получение списка всех задач
-    ArrayList<Task> getAllTasks();
+    List<Task> getAllTasks();
 
     // Удаление всех задач
     void clearTasks();
@@ -31,7 +31,7 @@ public interface TaskManager {
     // Методы для класса Subtask
 
     // Получение списка всех подзадач
-    ArrayList<Subtask> getAllSubtasks();
+    List<Subtask> getAllSubtasks();
 
     // Удаление всех подзадач
     void clearSubtasks();
@@ -52,13 +52,13 @@ public interface TaskManager {
     Subtask removeSubtask(int id);
 
     // Получение всех подзадач эпика
-    ArrayList<Subtask> getSubtasks(Epic epic);
+    List<Subtask> getSubtasks(Epic epic);
 
 
     // Методы для класса Epic
 
     // Получение списка всех эпиков
-    ArrayList<Epic> getAllEpics();
+    List<Epic> getAllEpics();
 
     // Удаление всех эпиков
     void clearEpics();

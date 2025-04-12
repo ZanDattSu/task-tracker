@@ -11,6 +11,11 @@ public class Task {
     public Task() {
     }
 
+    public Task(String name) {
+        this(name, null, Status.NEW, -1);
+    }
+
+
     public Task(Task task) {
         this.name = task.getName();
         this.description = task.getDescription();

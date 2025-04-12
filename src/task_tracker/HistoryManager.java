@@ -2,11 +2,13 @@ package task_tracker;
 
 import task_tracker.tasks_type.Task;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public interface HistoryManager {
+    void add(Task task);
 
-    ArrayList<Task> getHistory();
+    void remove(int id);
 
-     void add(Task task);
+    List<Task> getHistory();
+
 }
