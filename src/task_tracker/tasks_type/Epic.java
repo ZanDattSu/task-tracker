@@ -7,21 +7,21 @@ public class Epic extends Task {
 
     private ArrayList<Subtask> subtasks = new ArrayList<>();
 
-    public Epic(Epic epic) {
-        super(epic);
-        this.subtasks = epic.getSubtasks();
-    }
-
     public Epic(String name) {
-        super(name, -1);
+        super(name, null, Status.NEW, -1);
     }
 
-    public Epic(String name, Integer id) {
-        super(name, id);
+    public Epic(String name, String description) {
+        super(name, description, Status.NEW, -1);
     }
 
     public Epic(String name, String description, Integer id) {
-        super(name, description, id);
+        super(name, description, Status.NEW, id);
+    }
+
+    public Epic(Epic epic) {
+        super(epic);
+        this.subtasks = epic.getSubtasks();
     }
 
     public ArrayList<Subtask> getSubtasks() {
@@ -53,7 +53,7 @@ public class Epic extends Task {
 
     @Override
     public String toCsvString() {
-        return String.format("%d, EPIC, %s, %s, %s", id, name, status, description);
+        return String.format("%d,EPIC,%s,%s,%s", id, name, status, description);
     }
 
     @Override

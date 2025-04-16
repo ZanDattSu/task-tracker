@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 
 public class InMemoryTaskManager implements TaskManager {
-    private Integer IDCounter = 0;
+    private Integer IDCounter = 1;
 
     private final HashMap<Integer, Task> tasks = new HashMap<>();
 
@@ -20,17 +20,31 @@ public class InMemoryTaskManager implements TaskManager {
 
     private final HistoryManager historyManager;
 
-    public HistoryManager getHistoryManager() {
-        return historyManager;
-    }
-
     public InMemoryTaskManager() {
         this.historyManager = Managers.getDefaultHistory();
     }
 
+    public HistoryManager getHistoryManager() {
+        return historyManager;
+    }
+
+    @Override
+    public List<Task> getHistory() {
+        return historyManager.getHistory();
+    }
+
+    public void setHistory(List<Integer> history) {
+        HashMap<Integer, Task> allTasks = new HashMap<>(tasks);
+        allTasks.putAll(subtasks);
+        allTasks.putAll(epics);
+
+        for (Integer taskId : history) {
+            Task task = allTasks.get(taskId);
+            historyManager.add(task);
+        }
+    }
 
     // Методы для класса Task
-
     @Override
     public List<Task> getAllTasks() {
         return new ArrayList<>(tasks.values());
@@ -43,7 +57,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Task getTask(int id) {
-        Task task = tasks.get(id);
+            Task task = tasks.get(id);
         if (task != null) {
             historyManager.add(task);
         }

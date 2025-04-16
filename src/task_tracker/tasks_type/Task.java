@@ -16,15 +16,8 @@ public class Task {
     }
 
 
-    public Task(Task task) {
-        this.name = task.getName();
-        this.description = task.getDescription();
-        this.status = task.getStatus();
-        this.id = task.getID();
-    }
-
-    public Task(String name, Integer id) {
-        this(name, null, Status.NEW, id);
+    public Task(String name, String description) {
+        this(name, description, Status.NEW, -1);
     }
 
     public Task(String name, String description, Integer id) {
@@ -36,6 +29,13 @@ public class Task {
         this.description = description;
         this.status = status;
         this.id = id;
+    }
+
+    public Task(Task task) {
+        this.name = task.getName();
+        this.description = task.getDescription();
+        this.status = task.getStatus();
+        this.id = task.getID();
     }
 
     public String getName() {
@@ -82,7 +82,7 @@ public class Task {
     }
 
     public String toCsvString() {
-        return String.format("%d, TASK, %s, %s, %s", id, name, status, description);
+        return String.format("%d,TASK,%s,%s,%s", id, name, status, description);
     }
 
     @Override

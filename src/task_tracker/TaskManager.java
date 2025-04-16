@@ -76,4 +76,6 @@ public interface TaskManager {
     Epic removeEpic(int id);
 
     HistoryManager getHistoryManager();
+
+    public List<Task> getHistory();
 }

@@ -1,6 +1,8 @@
 package task_tracker;
 
+import task_tracker.tasks_type.Epic;
 import task_tracker.tasks_type.Status;
+import task_tracker.tasks_type.Subtask;
 import task_tracker.tasks_type.Task;
 
 import java.util.ArrayList;
@@ -8,15 +10,19 @@ import java.util.List;
 
 public class Parser {
 
-    public static Task fromString(String s) {
-        List<String> parts = new ArrayList<>(List.of(s.split(",")));
-
-        int id = Integer.parseInt(parts.get(0));
-        String name = parts.get(2);
-        Status status = Status.valueOf(parts.get(3));
-        String description = parts.get(4);
-
-        return new Task(name, description, status, id);
+    public static Task taskFromString(String[] s) {
+        Integer id = Integer.parseInt(s[0]);
+        String name = s[2];
+        Status status = Status.valueOf(s[3]);
+        String description = s[4];
+        if (s[1].equals("TASK")) {
+            return new Task(name, description, status, id);
+        } else if (s[1].equals("EPIC")) {
+            return new Epic(name, description, id);
+        } else {
+            Integer epicID = Integer.parseInt(s[5]);
+            return new Subtask(name, description, status, id, epicID);
+        }
     }
 
     public static String historyToCsvString(HistoryManager historyManager) {
@@ -25,15 +31,16 @@ public class Parser {
         for (Task task : history) {
             sb.append(task.getID()).append(",");
         }
-        sb.deleteCharAt(sb.length() - 1);
+        if (!sb.isEmpty()) {
+            sb.deleteCharAt(sb.length() - 1);
+        }
         return sb.toString();
     }
 
-    public static List<Integer> historyFromString(String s) {
-        List<String> parts = new ArrayList<>(List.of(s.split(",")));
+    public static List<Integer> historyFromString(String[] s) {
         List<Integer> result = new ArrayList<>();
 
-        for (String part : parts) {
+        for (String part : s) {
             result.add(Integer.parseInt(part));
         }
         return result;
