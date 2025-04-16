@@ -52,6 +52,11 @@ public class Epic extends Task {
     }
 
     @Override
+    public String toCsvString() {
+        return String.format("%d, EPIC, %s, %s, %s", id, name, status, description);
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;

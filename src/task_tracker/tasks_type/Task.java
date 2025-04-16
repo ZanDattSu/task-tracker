@@ -3,10 +3,10 @@ package task_tracker.tasks_type;
 import java.util.Objects;
 
 public class Task {
-    private String name;
-    private String description;
-    private Status status;
-    private Integer id;
+    protected String name;
+    protected String description;
+    protected Status status;
+    protected Integer id;
 
     public Task() {
     }
@@ -79,6 +79,10 @@ public class Task {
                 ", " + id +
                 ", " + status +
                 "}";
+    }
+
+    public String toCsvString() {
+        return String.format("%d, TASK, %s, %s, %s", id, name, status, description);
     }
 
     @Override
