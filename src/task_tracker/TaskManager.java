@@ -7,10 +7,11 @@ import task_tracker.tasks_type.Task;
 import java.util.List;
 
 public interface TaskManager {
+
     // Методы для класса Task
 
     // Получение списка всех задач
-    List<Task> getAllTasks();
+    List<Task> getTasks();
 
     // Удаление всех задач
     void clearTasks();
@@ -31,12 +32,12 @@ public interface TaskManager {
     // Методы для класса Subtask
 
     // Получение списка всех подзадач
-    List<Subtask> getAllSubtasks();
+    List<Subtask> getSubtasks();
 
     // Удаление всех подзадач
     void clearSubtasks();
 
-    // Получение по подзадачи Id
+    // Получение подзадачи по Id
     Subtask getSubtask(int id);
 
     // Создание новой подзадачи
@@ -58,7 +59,7 @@ public interface TaskManager {
     // Методы для класса Epic
 
     // Получение списка всех эпиков
-    List<Epic> getAllEpics();
+    List<Epic> getEpics();
 
     // Удаление всех эпиков
     void clearEpics();
@@ -77,5 +78,5 @@ public interface TaskManager {
 
     HistoryManager getHistoryManager();
 
-    public List<Task> getHistory();
+    List<Task> getHistory();
 }
