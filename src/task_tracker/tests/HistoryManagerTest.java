@@ -1,7 +1,11 @@
-package task_tracker;
+package task_tracker.tests;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import task_tracker.HistoryManager;
+import task_tracker.InMemoryHistoryManager;
+import task_tracker.InMemoryTaskManager;
+import task_tracker.TaskManager;
 import task_tracker.tasks_type.Task;
 
 import java.util.List;

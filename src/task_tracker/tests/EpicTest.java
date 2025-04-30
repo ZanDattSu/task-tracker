@@ -1,9 +1,13 @@
-package task_tracker.tasks_type;
+package task_tracker.tests;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import task_tracker.InMemoryTaskManager;
 import task_tracker.TaskManager;
+import task_tracker.tasks_type.Epic;
+import task_tracker.tasks_type.Status;
+import task_tracker.tasks_type.Subtask;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -19,7 +23,7 @@ class EpicTest {
 
     @Test
     void shouldReturnNewWhenSubtaskListIsEmpty() {
-        assertEquals(Status.NEW, epic.getStatus());
+        Assertions.assertEquals(Status.NEW, epic.getStatus());
     }
 
     @Test

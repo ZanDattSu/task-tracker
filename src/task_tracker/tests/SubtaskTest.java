@@ -1,8 +1,10 @@
-package task_tracker.tasks_type;
+package task_tracker.tests;
 
 import org.junit.jupiter.api.Test;
 import task_tracker.InMemoryTaskManager;
 import task_tracker.TaskManager;
+import task_tracker.tasks_type.Epic;
+import task_tracker.tasks_type.Subtask;
 
 import java.util.List;
 

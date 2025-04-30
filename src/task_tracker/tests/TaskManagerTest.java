@@ -1,11 +1,14 @@
-package task_tracker;
+package task_tracker.tests;
 
 import org.junit.jupiter.api.Test;
+import task_tracker.TaskManager;
 import task_tracker.tasks_type.Epic;
 import task_tracker.tasks_type.Status;
 import task_tracker.tasks_type.Subtask;
 import task_tracker.tasks_type.Task;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -209,4 +212,47 @@ abstract class TaskManagerTest<T extends TaskManager> {
                     "Подзадача эпика не удалена: id=" + st.getID());
         }
     }
+
+    @Test
+    void taskShouldStoreStartTimeAndDuration() {
+        LocalDateTime start = LocalDateTime.of(2025, 1, 1, 12, 0);
+        Duration duration = Duration.ofMinutes(90);
+        Task task = taskManager.addTask(new Task("Test Task", "Test Desc", Status.NEW, start, duration));
+
+        assertEquals(start, task.getStartTime(), "Start time should be set correctly");
+        assertEquals(duration, task.getDuration(), "Duration should be set correctly");
+        assertEquals(start.plus(duration), task.getEndTime(), "End time should be correctly calculated");
+    }
+
+    @Test
+    void subtaskShouldStoreStartTimeAndDuration() {
+        LocalDateTime start = LocalDateTime.of(2025, 2, 2, 15, 30);
+        Duration duration = Duration.ofMinutes(45);
+        Subtask subtask = taskManager.addSubtask(new Subtask(
+                "Test Subtask", "Desc", Status.IN_PROGRESS, start, duration, exampleEpic.getID()));
+
+        assertEquals(start, subtask.getStartTime());
+        assertEquals(duration, subtask.getDuration());
+        assertEquals(start.plus(duration), subtask.getEndTime());
+    }
+
+    @Test
+    void epicShouldCalculateStartTimeAndDurationFromSubtasks() {
+        Epic epic = taskManager.addEpic(new Epic("Epic Task", "Epic Desc"));
+
+        LocalDateTime start1 = LocalDateTime.of(2025, 3, 3, 9, 0);
+        Duration duration1 = Duration.ofMinutes(30);
+        taskManager.addSubtask(
+                new Subtask("Sub 1", "Desc 1", Status.NEW, start1, duration1, epic.getID()));
+
+        LocalDateTime start2 = LocalDateTime.of(2025, 3, 3, 10, 0);
+        Duration duration2 = Duration.ofMinutes(60);
+        taskManager.addSubtask(
+                new Subtask("Sub 2", "Desc 2", Status.NEW, start2, duration2, epic.getID()));
+
+        assertEquals(start1, epic.getStartTime(), "Epic start time should be the earliest subtask start time");
+        assertEquals(Duration.ofMinutes(120), epic.getDuration(), "Epic duration should be sum from earliest start to latest end");
+        assertEquals(start2.plus(duration2), epic.getEndTime(), "Epic end time should match latest subtask end time");
+    }
+
 }

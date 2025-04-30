@@ -5,6 +5,8 @@ import task_tracker.tasks_type.Status;
 import task_tracker.tasks_type.Subtask;
 import task_tracker.tasks_type.Task;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,13 +17,23 @@ public class Parser {
         String name = s[2];
         Status status = Status.valueOf(s[3]);
         String description = s[4];
-        if (s[1].equals("TASK")) {
-            return new Task(name, description, status, id);
-        } else if (s[1].equals("EPIC")) {
-            return new Epic(name, description, id);
-        } else {
-            Integer epicID = Integer.parseInt(s[5]);
-            return new Subtask(name, description, status, id, epicID);
+        LocalDateTime startTime = LocalDateTime.parse(s[5]);
+        Duration duration = Duration.parse(s[6]);
+
+        switch (s[1]) {
+            case "TASK": {
+                return new Task(name, description, status, id, startTime, duration);
+            }
+            case "EPIC": {
+                return new Epic(name, description, id);
+            }
+            case "SUBTASK": {
+                Integer epicID = Integer.parseInt(s[7]);
+                return new Subtask(name, description, status, id, startTime, duration, epicID);
+            }
+            default: {
+                throw new ManagerSaveException("Такой задачи не существует!");
+            }
         }
     }
 

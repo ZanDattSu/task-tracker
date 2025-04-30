@@ -1,38 +1,52 @@
 package task_tracker.tasks_type;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class Subtask extends Task {
     private final Integer epicID;
 
     public Subtask(String name, Integer epicID) {
-        super(name, null, Status.NEW, -1);
+        super(name, null, Status.NEW, -1, LocalDateTime.now(), Duration.ZERO);
         this.epicID = epicID;
     }
 
     public Subtask(String name, String description, Integer epicID) {
-        super(name, description, Status.NEW, -1);
+        super(name, description, Status.NEW, -1, LocalDateTime.now(), Duration.ZERO);
         this.epicID = epicID;
     }
 
     public Subtask(String name, String description, Integer id, Integer epicID) {
-        super(name, description, Status.NEW, id);
+        super(name, description, Status.NEW, id, LocalDateTime.now(), Duration.ZERO);
         this.epicID = epicID;
     }
 
     public Subtask(String name, String description, Status status, Integer epicID) {
-        super(name, description, status, -1);
+        super(name, description, status, -1, LocalDateTime.now(), Duration.ZERO);
         this.epicID = epicID;
     }
 
     public Subtask(String name, String description, Status status, Integer id, Integer epicID) {
-        super(name, description, status, id);
+        super(name, description, status, id, LocalDateTime.now(), Duration.ZERO);
         this.epicID = epicID;
     }
 
     public Subtask(Subtask subtask) {
         super(subtask);
         this.epicID = subtask.getEpicID();
+    }
+
+    public Subtask(String name, String description, Status status,
+                   LocalDateTime startTime, Duration duration, Integer epicID) {
+        super(name, description, status, -1, startTime, duration);
+        this.epicID = epicID;
+    }
+
+    public Subtask(String name, String description, Status status, Integer id,
+                   LocalDateTime startTime, Duration duration, Integer epicID) {
+        super(name, description, status, id, startTime, duration);
+        this.epicID = epicID;
     }
 
     public int getEpicID() {
@@ -46,13 +60,16 @@ public class Subtask extends Task {
                 ", " + description +
                 ", " + id +
                 ", " + status +
+                ", " + startTime.format(formatter) +
+                ", " + duration +
                 ", " + epicID +
                 "}";
     }
 
     @Override
     public String toCsvString() {
-        return String.format("%d,SUBTASK,%s,%s,%s,%d", id, name, status, description, epicID);
+        return String.format("%d,SUBTASK,%s,%s,%s,%s,%s,%d",
+                id, name, status, description, startTime, duration, epicID);
     }
 
     @Override
