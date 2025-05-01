@@ -19,13 +19,13 @@ class ParserTest {
     @Test
     void taskFromStringTest() {
         TaskManager taskManager = new InMemoryTaskManager();
-        Task t = new Task("Name", "Desc", Status.IN_PROGRESS, 1,
-                LocalDateTime.now(), Duration.ofHours(5));
+        Task t = new Task("Name", "Desc", Status.IN_PROGRESS,
+                LocalDateTime.now().minusDays(1), Duration.ofHours(5));
         Epic e = new Epic("Name", "Desc");
         Task task = taskManager.addTask(t);
         Epic epic = taskManager.addEpic(e);
 
-        Subtask st = new Subtask("Name", "Desc", Status.IN_PROGRESS, 2,
+        Subtask st = new Subtask("Name", "Desc", Status.IN_PROGRESS,
                 LocalDateTime.now(), Duration.ofHours(5), epic.getID());
         Subtask subtask = taskManager.addSubtask(st);
 
