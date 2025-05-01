@@ -9,6 +9,7 @@ import task_tracker.tasks_type.Task;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.Iterator;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -17,13 +18,33 @@ abstract class TaskManagerTest<T extends TaskManager> {
     protected T taskManager;
     protected Task exampleTask;
     protected Epic exampleEpic;
-    protected Subtask exampleSubtask;
+    protected Subtask earlySubt;
+    protected Subtask laterSubt;
+    protected LocalDateTime exampleTaskStart;
+    protected Duration exampleTaskDuration;
+    protected LocalDateTime earlySubtStart;
+    protected Duration earlySubtDuration;
+    protected LocalDateTime laterSubtStart;
+    protected Duration laterSubtDuration;
 
     void setup() {
-        exampleTask = taskManager.addTask(new Task("TaskName", "TaskDescription"));
-        exampleEpic = taskManager.addEpic(new Epic("EPIC", "EpicName"));
-        exampleSubtask = taskManager.addSubtask((new Subtask("SubTaskName", "SubTaskDescription",
-                Status.NEW, exampleEpic.getID())), exampleEpic);
+        exampleTaskStart = LocalDateTime.of(2026, 1, 1, 12, 0);
+        exampleTaskDuration = Duration.ofMinutes(90);
+
+        exampleTask = taskManager.addTask(new Task("Task 1", "Task Desc 1",
+                Status.NEW, exampleTaskStart, exampleTaskDuration));
+        exampleEpic = taskManager.addEpic(new Epic("Epic 1", "Epic Desc 1"));
+
+        earlySubtStart = LocalDateTime.of(2025, 3, 3, 9, 0);
+        earlySubtDuration = Duration.ofMinutes(30);
+        laterSubtStart = LocalDateTime.of(2025, 3, 3, 10, 0);
+        laterSubtDuration = Duration.ofMinutes(60);
+
+        earlySubt = taskManager.addSubtask((new Subtask("Sub 1", "Sub Desc 1",
+                Status.NEW, earlySubtStart, earlySubtDuration, exampleEpic.getID())), exampleEpic);
+        laterSubt = taskManager.addSubtask(
+                new Subtask("Sub 2", "Sub Desc 2",
+                        Status.NEW, laterSubtStart, laterSubtDuration, exampleEpic.getID()));
     }
 
     @Test
@@ -65,7 +86,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     void getSubtask() {
-        Subtask subTask = taskManager.getSubtask(exampleSubtask.getID());
+        Subtask subTask = taskManager.getSubtask(earlySubt.getID());
         Subtask subTaskErr = taskManager.getSubtask(10001);
         assertEquals(3, subTask.getID(), "ID не совпадают");
         assertNull(subTaskErr, "Задача существует");
@@ -97,7 +118,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     void addSubtask() {
-        Subtask subTask = taskManager.getSubtask(exampleSubtask.getID());
+        Subtask subTask = taskManager.getSubtask(earlySubt.getID());
         assertNotNull(subTask, "Подзадача не найдена");
     }
 
@@ -146,7 +167,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     void removeFromHistoryById() {
         taskManager.getTask(exampleTask.getID());
         taskManager.getTask(exampleTask.getID());
-        taskManager.getEpic(exampleSubtask.getID());
+        taskManager.getEpic(earlySubt.getID());
         taskManager.getSubtask(exampleEpic.getID());
 
         List<Task> tasksHistory = taskManager.getHistory();
@@ -187,7 +208,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     void removeSubtask() {
-        int subtaskID = exampleSubtask.getID();
+        int subtaskID = earlySubt.getID();
         int beforeSubCount = taskManager.getSubtasks().size();
 
         taskManager.removeSubtask(subtaskID);
@@ -215,44 +236,48 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     void taskShouldStoreStartTimeAndDuration() {
-        LocalDateTime start = LocalDateTime.of(2025, 1, 1, 12, 0);
-        Duration duration = Duration.ofMinutes(90);
-        Task task = taskManager.addTask(new Task("Test Task", "Test Desc", Status.NEW, start, duration));
-
-        assertEquals(start, task.getStartTime(), "Start time should be set correctly");
-        assertEquals(duration, task.getDuration(), "Duration should be set correctly");
-        assertEquals(start.plus(duration), task.getEndTime(), "End time should be correctly calculated");
+        assertEquals(exampleTaskStart, exampleTask.getStartTime(), "Start time should be set correctly");
+        assertEquals(exampleTaskDuration, exampleTask.getDuration(), "Duration should be set correctly");
+        assertEquals(exampleTaskStart.plus(exampleTaskDuration), exampleTask.getEndTime(),
+                "End time should be correctly calculated");
     }
 
     @Test
     void subtaskShouldStoreStartTimeAndDuration() {
-        LocalDateTime start = LocalDateTime.of(2025, 2, 2, 15, 30);
-        Duration duration = Duration.ofMinutes(45);
-        Subtask subtask = taskManager.addSubtask(new Subtask(
-                "Test Subtask", "Desc", Status.IN_PROGRESS, start, duration, exampleEpic.getID()));
-
-        assertEquals(start, subtask.getStartTime());
-        assertEquals(duration, subtask.getDuration());
-        assertEquals(start.plus(duration), subtask.getEndTime());
+        assertEquals(earlySubtStart, earlySubt.getStartTime());
+        assertEquals(earlySubtDuration, earlySubt.getDuration());
+        assertEquals(earlySubtStart.plus(earlySubtDuration), earlySubt.getEndTime());
     }
 
     @Test
     void epicShouldCalculateStartTimeAndDurationFromSubtasks() {
-        Epic epic = taskManager.addEpic(new Epic("Epic Task", "Epic Desc"));
+        assertEquals(earlySubtStart, exampleEpic.getStartTime(),
+                "Epic start time should be the earliest subtask start time");
+        assertEquals(Duration.ofMinutes(120), exampleEpic.getDuration(),
+                "Epic duration should be sum from earliest start to latest end");
+        assertEquals(laterSubtStart.plus(laterSubtDuration), exampleEpic.getEndTime(),
+                "Epic end time should match latest subtask end time");
+    }
 
-        LocalDateTime start1 = LocalDateTime.of(2025, 3, 3, 9, 0);
-        Duration duration1 = Duration.ofMinutes(30);
-        taskManager.addSubtask(
-                new Subtask("Sub 1", "Desc 1", Status.NEW, start1, duration1, epic.getID()));
+    @Test
+    void getPrioritizedTasksAfterUpdateReflectsNewOrder() {
+        assertEquals(3, taskManager.getPrioritizedTasks().size());
+        Iterator<Task> it1 = taskManager.getPrioritizedTasks().iterator();
+        assertSameById(earlySubt, it1.next());
+        assertSameById(laterSubt, it1.next());
 
-        LocalDateTime start2 = LocalDateTime.of(2025, 3, 3, 10, 0);
-        Duration duration2 = Duration.ofMinutes(60);
-        taskManager.addSubtask(
-                new Subtask("Sub 2", "Desc 2", Status.NEW, start2, duration2, epic.getID()));
+        Subtask theEarliest = taskManager.addSubtask((new Subtask("theEarliest", "",
+                Status.NEW, earlySubtStart.minusDays(1), earlySubtDuration, exampleEpic.getID())), exampleEpic);
 
-        assertEquals(start1, epic.getStartTime(), "Epic start time should be the earliest subtask start time");
-        assertEquals(Duration.ofMinutes(120), epic.getDuration(), "Epic duration should be sum from earliest start to latest end");
-        assertEquals(start2.plus(duration2), epic.getEndTime(), "Epic end time should match latest subtask end time");
+        Iterator<Task> it2 = taskManager.getPrioritizedTasks().iterator();
+        assertSameById(theEarliest, it2.next());
+        assertSameById(earlySubt, it2.next());
+    }
+
+    private void assertSameById(Task expected, Task actual) {
+        assertNotNull(actual, "Задача не должна быть null");
+        assertEquals(expected.getID(), actual.getID(),
+                "Ожидается задача с ID=" + expected.getID());
     }
 
 }
