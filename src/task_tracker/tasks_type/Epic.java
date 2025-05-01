@@ -56,7 +56,7 @@ public class Epic extends Task {
         calculateTime();
     }
 
-    private void calculateTime() {
+    public void calculateTime() {
         Optional<LocalDateTime> minStart = subtasks.stream()
                 .map(Task::getStartTime)
                 .filter(Objects::nonNull)

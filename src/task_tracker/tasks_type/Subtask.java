@@ -8,27 +8,27 @@ public class Subtask extends Task {
     private final Integer epicID;
 
     public Subtask(String name, Integer epicID) {
-        super(name, null, Status.NEW, -1, LocalDateTime.now(), Duration.ZERO);
+        super(name, null, Status.NEW, -1, LocalDateTime.MIN, Duration.ZERO);
         this.epicID = epicID;
     }
 
     public Subtask(String name, String description, Integer epicID) {
-        super(name, description, Status.NEW, -1, LocalDateTime.now(), Duration.ZERO);
+        super(name, description, Status.NEW, -1, LocalDateTime.MIN, Duration.ZERO);
         this.epicID = epicID;
     }
 
     public Subtask(String name, String description, Integer id, Integer epicID) {
-        super(name, description, Status.NEW, id, LocalDateTime.now(), Duration.ZERO);
+        super(name, description, Status.NEW, id, LocalDateTime.MIN, Duration.ZERO);
         this.epicID = epicID;
     }
 
     public Subtask(String name, String description, Status status, Integer epicID) {
-        super(name, description, status, -1, LocalDateTime.now(), Duration.ZERO);
+        super(name, description, status, -1, LocalDateTime.MIN, Duration.ZERO);
         this.epicID = epicID;
     }
 
     public Subtask(String name, String description, Status status, Integer id, Integer epicID) {
-        super(name, description, status, id, LocalDateTime.now(), Duration.ZERO);
+        super(name, description, status, id, LocalDateTime.MIN, Duration.ZERO);
         this.epicID = epicID;
     }
 

@@ -5,23 +5,25 @@ import task_tracker.tasks_type.Status;
 import task_tracker.tasks_type.Subtask;
 import task_tracker.tasks_type.Task;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.time.LocalDateTime;
+import java.util.*;
 
 public class InMemoryTaskManager implements TaskManager {
     private Integer idCounter = 1;
 
-    private final HashMap<Integer, Task> tasks = new HashMap<>();
+    private final Map<Integer, Task> tasks = new HashMap<>();
 
-    private final HashMap<Integer, Subtask> subtasks = new HashMap<>();
+    private final Map<Integer, Subtask> subtasks = new HashMap<>();
 
-    private final HashMap<Integer, Epic> epics = new HashMap<>();
+    private final Map<Integer, Epic> epics = new HashMap<>();
+
+    private final Set<Task> prioritizedTasks;
 
     private final HistoryManager historyManager;
 
     public InMemoryTaskManager() {
         this.historyManager = Managers.getDefaultHistory();
+        this.prioritizedTasks = new TreeSet<>(taskTimeComparator);
     }
 
     public HistoryManager getHistoryManager() {
@@ -34,7 +36,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     public void setHistory(List<Integer> history) {
-        HashMap<Integer, Task> allTasks = new HashMap<>(tasks);
+        Map<Integer, Task> allTasks = new HashMap<>(tasks);
         allTasks.putAll(subtasks);
         allTasks.putAll(epics);
 
@@ -45,11 +47,16 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     public List<Task> getAllTasks() {
-        ArrayList<Task> allTasks = new ArrayList<>(getTasks());
+        List<Task> allTasks = new ArrayList<>(getTasks());
 
         allTasks.addAll(getSubtasks());
         allTasks.addAll(getEpics());
         return allTasks;
+    }
+
+    @Override
+    public Set<Task> getPrioritizedTasks() {
+        return prioritizedTasks;
     }
 
     // Методы для класса Task
@@ -60,6 +67,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void clearTasks() {
+        prioritizedTasks.removeIf(t -> t.getClass().equals(Task.class));
         tasks.clear();
     }
 
@@ -82,8 +90,9 @@ public class InMemoryTaskManager implements TaskManager {
                 task.getStartTime(),
                 task.getDuration()
         );
-
         if (!tasks.containsKey(newTask.getID())) {
+            prioritizedTasks.add(newTask);
+            validateTimeSlot();
             tasks.put(newTask.getID(), newTask);
             return newTask;
         } else {
@@ -94,14 +103,17 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void updateTask(Task task) {
-        if (tasks.containsKey(task.getID())) {
-            tasks.put(task.getID(), task);
-        }
+        Task originalTask = tasks.get(task.getID());
+        prioritizedTasks.remove(originalTask);
+        prioritizedTasks.add(task);
+        validateTimeSlot();
+        tasks.put(task.getID(), task);
     }
 
     @Override
     public Task removeTask(int id) {
         historyManager.remove(id);
+        prioritizedTasks.remove(tasks.get(id));
         return tasks.remove(id);
     }
 
@@ -118,7 +130,9 @@ public class InMemoryTaskManager implements TaskManager {
         for (Epic epic : epics.values()) {
             epic.getSubtasks().clear();
             updateEpicStatus(epic);
+            epic.calculateTime();
         }
+        prioritizedTasks.removeIf(task -> task.getClass().equals(Subtask.class));
         subtasks.clear();
     }
 
@@ -152,7 +166,10 @@ public class InMemoryTaskManager implements TaskManager {
                 subtask.getDuration(),
                 epic.getID()
         );
+        prioritizedTasks.add(newSubtask);
+        validateTimeSlot();
         subtasks.put(newSubtask.getID(), newSubtask);
+
         epic.addSubtask(newSubtask);
         updateEpicStatus(epic);
 
@@ -165,7 +182,12 @@ public class InMemoryTaskManager implements TaskManager {
         if (subtasks.containsKey(subtask.getID())) {
             Epic epic = epics.get(subtask.getEpicID());
 
+
+            prioritizedTasks.remove(originalSubtask);
+            prioritizedTasks.add(subtask);
+            validateTimeSlot();
             subtasks.put(subtask.getID(), subtask);
+
             epic.removeSubtask(originalSubtask);
             epic.addSubtask(subtask);
             updateEpicStatus(epic);
@@ -181,6 +203,7 @@ public class InMemoryTaskManager implements TaskManager {
             updateEpicStatus(epic);
         }
         historyManager.remove(id);
+        prioritizedTasks.remove(subtask);
         return subtasks.remove(id);
     }
 
@@ -274,4 +297,49 @@ public class InMemoryTaskManager implements TaskManager {
         epics.remove(id);
         return epic;
     }
+
+    public void validateTimeSlot() {
+        Task prev = null;
+        for (Task curr : prioritizedTasks) {
+            if (prev != null && !validateNonOverlap(prev, curr)) {
+                throw new RuntimeException(
+                        String.format("Задача %d (%s–%s) пересекается с %d (%s–%s)",
+                                prev.getID(), prev.getStartTime(), prev.getEndTime(),
+                                curr.getID(), curr.getStartTime(), curr.getEndTime())
+                );
+            }
+            prev = curr;
+        }
+    }
+
+    private boolean validateNonOverlap(Task t1, Task t2) {
+        if (t1.getStartTime() == null || t2.getStartTime() == null) {
+            return true;
+        }
+        if (t1.getEndTime().isEqual(LocalDateTime.MIN) || t2.getEndTime().isEqual(LocalDateTime.MIN)){
+            return true;
+        }
+        LocalDateTime s1 = t1.getStartTime(), e1 = t1.getEndTime();
+        LocalDateTime s2 = t2.getStartTime(), e2 = t2.getEndTime();
+
+        return e1.isBefore(s2) || e1.isEqual(s2) || e2.isBefore(s1) || e2.isEqual(s1);
+
+    }
+
+    private static final Comparator<Task> taskTimeComparator = (o1, o2) -> {
+        LocalDateTime s1 = o1.getStartTime();
+        LocalDateTime s2 = o2.getStartTime();
+
+        if (s1 == null && s2 == null) {
+            return Integer.compare(o1.getID(), o2.getID());
+        }
+        if (s1 == null) {
+            return 1;
+        }
+        if (s2 == null) {
+            return -1;
+        }
+        int cmp = s1.compareTo(s2);
+        return (cmp != 0) ? cmp : Integer.compare(o1.getID(), o2.getID());
+    };
 }

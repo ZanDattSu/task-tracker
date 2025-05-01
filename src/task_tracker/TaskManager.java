@@ -5,6 +5,7 @@ import task_tracker.tasks_type.Subtask;
 import task_tracker.tasks_type.Task;
 
 import java.util.List;
+import java.util.Set;
 
 public interface TaskManager {
 
@@ -79,4 +80,6 @@ public interface TaskManager {
     HistoryManager getHistoryManager();
 
     List<Task> getHistory();
+
+    Set<Task> getPrioritizedTasks();
 }
