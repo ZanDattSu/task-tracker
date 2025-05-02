@@ -1,8 +1,8 @@
 package task_tracker.tests;
 
 import org.junit.jupiter.api.Test;
-import task_tracker.InMemoryTaskManager;
-import task_tracker.TaskManager;
+import task_tracker.managers.InMemoryTaskManager;
+import task_tracker.managers.TaskManager;
 import task_tracker.tasks_type.Epic;
 import task_tracker.tasks_type.Status;
 import task_tracker.tasks_type.Subtask;
@@ -12,7 +12,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static task_tracker.Parser.taskFromString;
+import static task_tracker.utils.Parser.taskFromString;
 
 class ParserTest {
 

@@ -1,7 +1,7 @@
 package task_tracker.tests;
 
 import org.junit.jupiter.api.BeforeEach;
-import task_tracker.InMemoryTaskManager;
+import task_tracker.managers.InMemoryTaskManager;
 
 class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
 

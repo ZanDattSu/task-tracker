@@ -1,7 +1,7 @@
 package task_tracker.tests;
 
 import org.junit.jupiter.api.Test;
-import task_tracker.TaskManager;
+import task_tracker.managers.TaskManager;
 import task_tracker.tasks_type.Epic;
 import task_tracker.tasks_type.Status;
 import task_tracker.tasks_type.Subtask;
@@ -74,14 +74,15 @@ abstract class TaskManagerTest<T extends TaskManager> {
     void clearSubtasks() {
         taskManager.addSubtask(new Subtask("SubtaskName", "SubtaskDescription", exampleEpic.getID()));
         taskManager.clearSubtasks();
-        assertEquals(0, taskManager.getSubtasks().size(), "Задачи не удаляются");
+        assertEquals(0, taskManager.getSubtasks().size(), "Подзадачи не удаляются");
     }
 
     @Test
     void clearEpics() {
-        taskManager.addTask(new Epic("EpicName", "EpicDescription"));
         taskManager.clearEpics();
-        assertEquals(0, taskManager.getEpics().size(), "Задачи не удаляются");
+        assertEquals(0, taskManager.getEpics().size(), "Эпики не удаляются");
+        assertEquals(0, taskManager.getSubtasks().size(), "Подзадачи эпика не удаляются");
+
     }
 
     @Test

@@ -1,28 +1,24 @@
 package task_tracker.tasks_type;
 
-import java.time.Duration;
-import java.time.LocalDateTime;
+import task_tracker.utils.TimeCalculator;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 public class Epic extends Task {
     private List<Subtask> subtasks = new ArrayList<>();
 
     public Epic(String name) {
-        super(name, null, Status.NEW, -1);
-        calculateTime();
+        super(name, null, Status.NEW, DEFAULT_ID);
     }
 
     public Epic(String name, String description) {
-        super(name, description, Status.NEW, -1);
-        calculateTime();
+        super(name, description, Status.NEW, DEFAULT_ID);
     }
 
     public Epic(String name, String description, Integer id) {
         super(name, description, Status.NEW, id);
-        calculateTime();
     }
 
     public Epic(Epic epic) {
@@ -35,11 +31,9 @@ public class Epic extends Task {
     }
 
     public List<Integer> getSubtasksID() {
-        List<Integer> subtasksID = new ArrayList<>();
-        for (Subtask subtask : subtasks) {
-            subtasksID.add(subtask.getID());
-        }
-        return subtasksID;
+        return subtasks.stream()
+                .map(Subtask::getID)
+                .toList();
     }
 
     public void setSubtasks(ArrayList<Subtask> subtasks) {
@@ -48,32 +42,16 @@ public class Epic extends Task {
 
     public void addSubtask(Subtask subtask) {
         subtasks.add(subtask);
-        calculateTime();
+        updateTimeParameters();
     }
 
     public void removeSubtask(Subtask subtask) {
         subtasks.remove(subtask);
-        calculateTime();
+        updateTimeParameters();
     }
 
-    public void calculateTime() {
-        Optional<LocalDateTime> minStart = subtasks.stream()
-                .map(Task::getStartTime)
-                .filter(Objects::nonNull)
-                .min(LocalDateTime::compareTo);
-
-        Optional<LocalDateTime> maxEnd = subtasks.stream()
-                .map(Task::getEndTime)
-                .filter(Objects::nonNull)
-                .max(LocalDateTime::compareTo);
-
-        if (minStart.isPresent() && maxEnd.isPresent()) {
-            this.startTime = minStart.get();
-            this.duration = Duration.between(startTime, maxEnd.get());
-        } else {
-            this.startTime = LocalDateTime.MIN;
-            this.duration = Duration.ZERO;
-        }
+    public void updateTimeParameters() {
+        TimeCalculator.updateEpicTime(this, subtasks);
     }
 
     @Override

@@ -1,4 +1,4 @@
-package task_tracker;
+package task_tracker.managers;
 
 import task_tracker.tasks_type.Task;
 
@@ -10,5 +10,4 @@ public interface HistoryManager {
     void remove(int id);
 
     List<Task> getHistory();
-
 }

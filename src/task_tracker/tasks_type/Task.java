@@ -1,5 +1,7 @@
 package task_tracker.tasks_type;
 
+import task_tracker.utils.TimeCalculator;
+
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -10,28 +12,30 @@ public class Task {
     protected String description;
     protected Status status;
     protected Integer id;
-
     protected LocalDateTime startTime;
     protected Duration duration;
+
+    protected static final Integer DEFAULT_ID = -1;
+    protected static final LocalDateTime DEFAULT_TIME = LocalDateTime.MIN;
     protected static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss dd.MM.yyyy");
 
     public Task() {
     }
 
     public Task(String name) {
-        this(name, null, Status.NEW, -1, LocalDateTime.MIN, Duration.ZERO);
+        this(name, null, Status.NEW, DEFAULT_ID, DEFAULT_TIME, Duration.ZERO);
     }
 
     public Task(String name, String description) {
-        this(name, description, Status.NEW, -1, LocalDateTime.MIN, Duration.ZERO);
+        this(name, description, Status.NEW, DEFAULT_ID, DEFAULT_TIME, Duration.ZERO);
     }
 
     public Task(String name, String description, Integer id) {
-        this(name, description, Status.NEW, id, LocalDateTime.MIN, Duration.ZERO);
+        this(name, description, Status.NEW, id, DEFAULT_TIME, Duration.ZERO);
     }
 
     public Task(String name, String description, Status status, Integer id) {
-        this(name, description, status, id, LocalDateTime.MIN, Duration.ZERO);
+        this(name, description, status, id, DEFAULT_TIME, Duration.ZERO);
     }
 
     public Task(Task task) {
@@ -115,10 +119,11 @@ public class Task {
     }
 
     public LocalDateTime getEndTime() {
-        if (startTime == null){
-            return null;
-        }
-        return startTime.plus(duration);
+        return TimeCalculator.calculateEndTime(startTime, duration);
+    }
+
+    public static LocalDateTime getDefaultTime() {
+        return DEFAULT_TIME;
     }
 
     @Override

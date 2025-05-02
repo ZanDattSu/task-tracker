@@ -1,4 +1,4 @@
-package task_tracker;
+package task_tracker.managers;
 
 import task_tracker.tasks_type.Epic;
 import task_tracker.tasks_type.Subtask;
@@ -8,6 +8,9 @@ import java.util.List;
 import java.util.Set;
 
 public interface TaskManager {
+
+    //Получить все задачи, подзадачи и эпики
+    List<Task> getAllTasks();
 
     // Методы для класса Task
 
@@ -77,9 +80,12 @@ public interface TaskManager {
     // Удаление эпика по Id
     Epic removeEpic(int id);
 
-    HistoryManager getHistoryManager();
-
+    //Получить историю
     List<Task> getHistory();
 
+    //Записать историю
+    void setHistory(List<Integer> history);
+
+    //Получить задачи по приоритету (время)
     Set<Task> getPrioritizedTasks();
 }

@@ -1,5 +1,7 @@
-package task_tracker;
+package task_tracker.utils;
 
+import task_tracker.managers.HistoryManager;
+import task_tracker.managers.ManagerSaveException;
 import task_tracker.tasks_type.Epic;
 import task_tracker.tasks_type.Status;
 import task_tracker.tasks_type.Subtask;
@@ -20,21 +22,15 @@ public class Parser {
         LocalDateTime startTime = LocalDateTime.parse(s[5]);
         Duration duration = Duration.parse(s[6]);
 
-        switch (s[1]) {
-            case "TASK": {
-                return new Task(name, description, status, id, startTime, duration);
-            }
-            case "EPIC": {
-                return new Epic(name, description, id);
-            }
-            case "SUBTASK": {
+        return switch (s[1]) {
+            case "TASK" -> new Task(name, description, status, id, startTime, duration);
+            case "EPIC" -> new Epic(name, description, id);
+            case "SUBTASK" -> {
                 Integer epicID = Integer.parseInt(s[7]);
-                return new Subtask(name, description, status, id, startTime, duration, epicID);
+                yield new Subtask(name, description, status, id, startTime, duration, epicID);
             }
-            default: {
-                throw new ManagerSaveException("Такой задачи не существует!");
-            }
-        }
+            default -> throw new ManagerSaveException("Такой задачи не существует!");
+        };
     }
 
     public static String historyToCsvString(HistoryManager historyManager) {
