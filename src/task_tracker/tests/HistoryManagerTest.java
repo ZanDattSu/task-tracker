@@ -3,8 +3,7 @@ package task_tracker.tests;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import task_tracker.managers.HistoryManager;
-import task_tracker.managers.InMemoryHistoryManager;
-import task_tracker.managers.InMemoryTaskManager;
+import task_tracker.managers.Managers;
 import task_tracker.managers.TaskManager;
 import task_tracker.tasks_type.Task;
 
@@ -21,8 +20,9 @@ class HistoryManagerTest {
 
     @BeforeEach
     void beforeEach() {
-        historyManager = new InMemoryHistoryManager();
-        TaskManager taskManager = new InMemoryTaskManager();
+        TaskManager taskManager = Managers.getDefault();
+        historyManager = Managers.getDefaultHistory();
+
         task1 = taskManager.addTask(new Task("Task 1", "Desc"));
         task2 = taskManager.addTask(new Task("Task 2", "Desc"));
         task3 = taskManager.addTask(new Task("Task 3", "Desc"));

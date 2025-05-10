@@ -9,6 +9,8 @@ import java.util.Set;
 
 public interface TaskManager {
 
+    HistoryManager getHistoryManager();
+
     //Получить все задачи, подзадачи и эпики
     List<Task> getAllTasks();
 

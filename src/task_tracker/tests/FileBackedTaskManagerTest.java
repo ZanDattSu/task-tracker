@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import task_tracker.managers.FileBackedTaskManager;
 import task_tracker.managers.ManagerSaveException;
+import task_tracker.managers.Managers;
 import task_tracker.tasks_type.Epic;
 
 import java.io.File;
@@ -21,14 +22,14 @@ class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
     public void beforeEach() {
         file = new File("test-status.csv");
         clearFile(file);
-        taskManager = FileBackedTaskManager.loadFromFile(file);
+        taskManager = Managers.getFileBacked(file);
         super.setup();
     }
 
     @Test
     public void shouldLoadEmptyTaskListFromFile() {
         clearFile(file);
-        taskManager = FileBackedTaskManager.loadFromFile(file);
+        taskManager = Managers.getFileBacked(file);
         assertTrue(taskManager.getAllTasks().isEmpty());
     }
 
@@ -37,7 +38,7 @@ class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
         Epic epic = taskManager.addEpic(new Epic("Epic"));
         taskManager.save();
 
-        FileBackedTaskManager loaded = FileBackedTaskManager.loadFromFile(file);
+        FileBackedTaskManager loaded = Managers.getFileBacked(file);
         Epic loadedEpic = loaded.getEpic(epic.getID());
 
         assertNotNull(loadedEpic);
@@ -49,7 +50,7 @@ class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
         taskManager.addEpic(new Epic("Epic"));
         taskManager.save();
 
-        FileBackedTaskManager loaded = FileBackedTaskManager.loadFromFile(file);
+        FileBackedTaskManager loaded = Managers.getFileBacked(file);
 
         assertTrue(loaded.getHistory().isEmpty());
     }

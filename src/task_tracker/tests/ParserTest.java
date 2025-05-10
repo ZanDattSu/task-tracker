@@ -1,7 +1,7 @@
 package task_tracker.tests;
 
 import org.junit.jupiter.api.Test;
-import task_tracker.managers.InMemoryTaskManager;
+import task_tracker.managers.Managers;
 import task_tracker.managers.TaskManager;
 import task_tracker.tasks_type.Epic;
 import task_tracker.tasks_type.Status;
@@ -18,7 +18,7 @@ class ParserTest {
 
     @Test
     void taskFromStringTest() {
-        TaskManager taskManager = new InMemoryTaskManager();
+        TaskManager taskManager = Managers.getDefault();
         Task t = new Task("Name", "Desc", Status.IN_PROGRESS,
                 LocalDateTime.now().minusDays(1), Duration.ofHours(5));
         Epic e = new Epic("Name", "Desc");

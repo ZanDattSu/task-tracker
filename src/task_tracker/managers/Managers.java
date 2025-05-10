@@ -3,12 +3,12 @@ package task_tracker.managers;
 import java.io.File;
 
 public class Managers {
-    public static TaskManager getDefault() {
+    public static InMemoryTaskManager getDefault() {
         return new InMemoryTaskManager();
     }
 
-    public static TaskManager getDefaultFile(File file) {
-        return new FileBackedTaskManager(file);
+    public static FileBackedTaskManager getFileBacked(File file) {
+        return FileBackedTaskManager.loadFromFile(file);
     }
 
     public static HistoryManager getDefaultHistory() {
