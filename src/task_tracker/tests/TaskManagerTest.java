@@ -275,6 +275,8 @@ abstract class TaskManagerTest<T extends TaskManager> {
         assertSameById(earlySubt, it2.next());
     }
 
+
+
     private void assertSameById(Task expected, Task actual) {
         assertNotNull(actual, "Задача не должна быть null");
         assertEquals(expected.getID(), actual.getID(),

@@ -5,14 +5,11 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
-import task_tracker.tasks_type.Task;
 
 import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.Set;
 
 public class GsonProvider {
     private static final Gson gson = new GsonBuilder()
@@ -21,20 +18,8 @@ public class GsonProvider {
             .registerTypeAdapter(Duration.class, new DurationAdapter())
             .create();
 
-    public static String taskToString(Task task) {
-        return gson.toJson(task);
-    }
-
-    public static String taskToString(List<Task> tasks) {
-        return gson.toJson(tasks);
-    }
-
-    public static String taskToString(Set<Task> tasks) {
-        return gson.toJson(tasks);
-    }
-
-    public static Task taskFromString(String task) {
-        return gson.fromJson(task, Task.class);
+    public static Gson getGson() {
+        return gson;
     }
 
     private static class LocalDateTimeAdapter extends TypeAdapter<LocalDateTime> {

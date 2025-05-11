@@ -1,5 +1,3 @@
 id,type,name,status,description,startTime,duration,epic
-2,TASK,Task new,DONE,Task Desc,2025-01-01T04:00,PT1H30M
-3,TASK,Task new,DONE,Task Desc,2025-01-01T06:00,PT1H30M
-5,TASK,Task new,DONE,Task Desc,2024-01-01T06:00,PT1H30M
+10,EPIC,Epic 2,NEW,Epic Desc2,-999999999-01-01T00:00,PT0S
 
