@@ -82,7 +82,7 @@ public class InMemoryTaskManager implements TaskManager {
                     task.getStartTime(),
                     task.getDuration()
             );
-            idCounter++;
+            idCounter = Math.max(idCounter, task.getID() + 1);
         }
 
         if (tasks.containsKey(newTask.getID())) {
@@ -180,7 +180,7 @@ public class InMemoryTaskManager implements TaskManager {
                     subtask.getDuration(),
                     epic.getID()
             );
-            idCounter++;
+            idCounter = Math.max(idCounter, subtask.getID() + 1);
         }
 
         if (subtasks.containsKey(newSubtask.getID())) {
@@ -302,21 +302,28 @@ public class InMemoryTaskManager implements TaskManager {
                     epic.getDescription(),
                     epic.getID()
             );
-            idCounter++;
+            idCounter = Math.max(idCounter, epic.getID() + 1);
         }
         if (epics.containsKey(newEpic.getID())) {
             this.updateEpic(newEpic);
         } else {
             epics.put(newEpic.getID(), newEpic);
         }
+        List<Subtask> subtasks = epic.getSubtasks();
+        if (subtasks != null) {
+            for (Subtask subtask : subtasks) {
+                addSubtask(subtask, newEpic);
+            }
+        }
         return newEpic;
     }
 
     @Override
     public void updateEpic(Epic epic) {
-        if (epics.containsKey(epic.getID())) {
-            epics.put(epic.getID(), epic);
+        if (!epics.containsKey(epic.getID())) {
+            return;
         }
+        epics.put(epic.getID(), epic);
     }
 
     public Epic removeEpic(int id) {

@@ -1,0 +1,9 @@
+{
+  "epicID": 2,
+  "name": "Sub 1",
+  "description": "Sub Desc 1",
+  "status": "NEW",
+  "id": 3,
+  "startTime": "09:00:00 03.03.2025",
+  "duration": "PT30M"
+}

@@ -46,28 +46,18 @@ class GsonProviderTest {
     @Test
     void test() {
         String gsonTask = gson.toJson(exampleTask);
-        System.out.println(gsonTask);
-
         Task task = gson.fromJson(gsonTask, Task.class);
         assertEquals(task, exampleTask);
 
-
         String gsonSubTask = gson.toJson(earlySubt);
-        System.out.println(gsonSubTask);
-
         Subtask subtask = gson.fromJson(gsonSubTask, Subtask.class);
         assertEquals(subtask, earlySubt);
 
         String gsonSubTask1 = gson.toJson(laterSubt);
-        System.out.println(gsonSubTask1);
-
         Subtask subtask1 = gson.fromJson(gsonSubTask1, Subtask.class);
         assertEquals(subtask1, laterSubt);
 
-
         String gsonEpic = gson.toJson(exampleEpic);
-        System.out.println(gsonEpic);
-
         Epic epic = gson.fromJson(gsonEpic, Epic.class);
         assertEquals(epic, exampleEpic);
     }

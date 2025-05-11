@@ -1,0 +1,8 @@
+{
+  "name": "Task 1",
+  "description": "Task Desc 1",
+  "status": "NEW",
+  "id": 1,
+  "startTime": "12:00:00 01.01.2026",
+  "duration": "PT1H30M"
+}

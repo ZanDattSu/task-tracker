@@ -1,0 +1,28 @@
+{
+  "subtasks": [
+    {
+      "epicID": 2,
+      "name": "Sub 1",
+      "description": "Sub Desc 1",
+      "status": "NEW",
+      "id": 3,
+      "startTime": "09:00:00 03.03.2025",
+      "duration": "PT30M"
+    },
+    {
+      "epicID": 2,
+      "name": "Sub 2",
+      "description": "Sub Desc 2",
+      "status": "NEW",
+      "id": 4,
+      "startTime": "10:00:00 03.03.2025",
+      "duration": "PT1H"
+    }
+  ],
+  "name": "Epic 1",
+  "description": "Epic Desc 1",
+  "status": "NEW",
+  "id": 2,
+  "startTime": "09:00:00 03.03.2025",
+  "duration": "PT2H"
+}
