@@ -53,7 +53,6 @@ public class InMemoryHistoryManager implements HistoryManager {
         if (nodeToRemove == null) {
             return;
         }
-
         removeNode(nodeToRemove);
         nodeMap.remove(id);
     }

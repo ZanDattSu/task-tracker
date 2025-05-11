@@ -5,29 +5,29 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class Subtask extends Task {
-    private final Integer epicID;
+    private final int epicID;
 
-    public Subtask(String name, Integer epicID) {
+    public Subtask(String name, int epicID) {
         super(name, null, Status.NEW, DEFAULT_ID, DEFAULT_TIME, Duration.ZERO);
         this.epicID = epicID;
     }
 
-    public Subtask(String name, String description, Integer epicID) {
+    public Subtask(String name, String description, int epicID) {
         super(name, description, Status.NEW, DEFAULT_ID, DEFAULT_TIME, Duration.ZERO);
         this.epicID = epicID;
     }
 
-    public Subtask(String name, String description, Integer id, Integer epicID) {
+    public Subtask(String name, String description, int id, int epicID) {
         super(name, description, Status.NEW, id, DEFAULT_TIME, Duration.ZERO);
         this.epicID = epicID;
     }
 
-    public Subtask(String name, String description, Status status, Integer epicID) {
+    public Subtask(String name, String description, Status status, int epicID) {
         super(name, description, status, DEFAULT_ID, DEFAULT_TIME, Duration.ZERO);
         this.epicID = epicID;
     }
 
-    public Subtask(String name, String description, Status status, Integer id, Integer epicID) {
+    public Subtask(String name, String description, Status status, int id, int epicID) {
         super(name, description, status, id, DEFAULT_TIME, Duration.ZERO);
         this.epicID = epicID;
     }
@@ -38,13 +38,13 @@ public class Subtask extends Task {
     }
 
     public Subtask(String name, String description, Status status,
-                   LocalDateTime startTime, Duration duration, Integer epicID) {
+                   LocalDateTime startTime, Duration duration, int epicID) {
         super(name, description, status, DEFAULT_ID, startTime, duration);
         this.epicID = epicID;
     }
 
-    public Subtask(String name, String description, Status status, Integer id,
-                   LocalDateTime startTime, Duration duration, Integer epicID) {
+    public Subtask(String name, String description, Status status, int id,
+                   LocalDateTime startTime, Duration duration, int epicID) {
         super(name, description, status, id, startTime, duration);
         this.epicID = epicID;
     }
@@ -64,12 +64,6 @@ public class Subtask extends Task {
                 ", " + duration +
                 ", " + epicID +
                 "}";
-    }
-
-    @Override
-    public String toCsvString() {
-        return String.format("%d,SUBTASK,%s,%s,%s,%s,%s,%d",
-                id, name, status, description, startTime, duration, epicID);
     }
 
     @Override

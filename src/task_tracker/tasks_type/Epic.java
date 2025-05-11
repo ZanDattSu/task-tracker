@@ -17,7 +17,7 @@ public class Epic extends Task {
         super(name, description, Status.NEW, DEFAULT_ID);
     }
 
-    public Epic(String name, String description, Integer id) {
+    public Epic(String name, String description, int id) {
         super(name, description, Status.NEW, id);
     }
 
@@ -65,12 +65,6 @@ public class Epic extends Task {
                 ", " + duration +
                 ", " + getSubtasks() +
                 "}";
-    }
-
-    @Override
-    public String toCsvString() {
-        return String.format("%d,EPIC,%s,%s,%s,%s,%s",
-                id, name, status, description, startTime, duration);
     }
 
     @Override

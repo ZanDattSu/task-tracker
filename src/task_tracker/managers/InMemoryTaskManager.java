@@ -63,23 +63,36 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Task addTask(Task task) {
-        Task newTask = new Task(
-                task.getName(),
-                task.getDescription(),
-                task.getStatus(),
-                idCounter++,
-                task.getStartTime(),
-                task.getDuration()
-        );
-
-        if (tasks.containsKey(newTask.getID())) {
-            System.out.println("Задача с таким ID уже существует");
-            return null;
+        Task newTask;
+        if (task.getID() == Task.getDefaultId()) {
+            newTask = new Task(
+                    task.getName(),
+                    task.getDescription(),
+                    task.getStatus(),
+                    idCounter++,
+                    task.getStartTime(),
+                    task.getDuration()
+            );
+        } else {
+            newTask = new Task(
+                    task.getName(),
+                    task.getDescription(),
+                    task.getStatus(),
+                    task.getID(),
+                    task.getStartTime(),
+                    task.getDuration()
+            );
+            idCounter++;
         }
 
-        prioritizedTasks.add(newTask);
-        timeValidator.validateTimeSlot(prioritizedTasks);
-        tasks.put(newTask.getID(), newTask);
+        if (tasks.containsKey(newTask.getID())) {
+            this.updateTask(newTask);
+        } else {
+            prioritizedTasks.add(newTask);
+            timeValidator.validateTimeSlot(prioritizedTasks);
+            tasks.put(newTask.getID(), newTask);
+        }
+
         return newTask;
 
     }
@@ -146,23 +159,40 @@ public class InMemoryTaskManager implements TaskManager {
             System.out.println("Эпик не найден");
             return null;
         }
+        Subtask newSubtask;
+        if (subtask.getID() == Subtask.getDefaultId()) {
+            newSubtask = new Subtask(
+                    subtask.getName(),
+                    subtask.getDescription(),
+                    subtask.getStatus(),
+                    idCounter++,
+                    subtask.getStartTime(),
+                    subtask.getDuration(),
+                    epic.getID()
+            );
+        } else {
+            newSubtask = new Subtask(
+                    subtask.getName(),
+                    subtask.getDescription(),
+                    subtask.getStatus(),
+                    subtask.getID(),
+                    subtask.getStartTime(),
+                    subtask.getDuration(),
+                    epic.getID()
+            );
+            idCounter++;
+        }
 
-        Subtask newSubtask = new Subtask(
-                subtask.getName(),
-                subtask.getDescription(),
-                subtask.getStatus(),
-                idCounter++,
-                subtask.getStartTime(),
-                subtask.getDuration(),
-                epic.getID()
-        );
+        if (subtasks.containsKey(newSubtask.getID())) {
+            this.updateSubtask(newSubtask);
+        } else {
+            prioritizedTasks.add(newSubtask);
+            timeValidator.validateTimeSlot(prioritizedTasks);
+            subtasks.put(newSubtask.getID(), newSubtask);
 
-        prioritizedTasks.add(newSubtask);
-        timeValidator.validateTimeSlot(prioritizedTasks);
-        subtasks.put(newSubtask.getID(), newSubtask);
-
-        epic.addSubtask(newSubtask);
-        updateEpicStatus(epic);
+            epic.addSubtask(newSubtask);
+            updateEpicStatus(epic);
+        }
 
         return newSubtask;
     }
@@ -259,17 +289,26 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Epic addEpic(Epic epic) {
-        Epic newEpic = new Epic(
-                epic.getName(),
-                epic.getDescription(),
-                idCounter++
-        );
-        if (epics.containsKey(newEpic.getID())) {
-            System.out.println("Эпик с таким ID уже существует");
-            return null;
+        Epic newEpic;
+        if (epic.getID() == Epic.getDefaultId()) {
+            newEpic = new Epic(
+                    epic.getName(),
+                    epic.getDescription(),
+                    idCounter++
+            );
+        } else {
+            newEpic = new Epic(
+                    epic.getName(),
+                    epic.getDescription(),
+                    epic.getID()
+            );
+            idCounter++;
         }
-
-        epics.put(newEpic.getID(), newEpic);
+        if (epics.containsKey(newEpic.getID())) {
+            this.updateEpic(newEpic);
+        } else {
+            epics.put(newEpic.getID(), newEpic);
+        }
         return newEpic;
     }
 

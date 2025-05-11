@@ -11,11 +11,11 @@ public class Task {
     protected String name;
     protected String description;
     protected Status status;
-    protected Integer id;
+    protected int id;
     protected LocalDateTime startTime;
     protected Duration duration;
 
-    protected static final Integer DEFAULT_ID = -1;
+    protected static final int DEFAULT_ID = -1;
     protected static final LocalDateTime DEFAULT_TIME = LocalDateTime.MIN;
     protected static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss dd.MM.yyyy");
 
@@ -30,11 +30,11 @@ public class Task {
         this(name, description, Status.NEW, DEFAULT_ID, DEFAULT_TIME, Duration.ZERO);
     }
 
-    public Task(String name, String description, Integer id) {
+    public Task(String name, String description, int id) {
         this(name, description, Status.NEW, id, DEFAULT_TIME, Duration.ZERO);
     }
 
-    public Task(String name, String description, Status status, Integer id) {
+    public Task(String name, String description, Status status, int id) {
         this(name, description, status, id, DEFAULT_TIME, Duration.ZERO);
     }
 
@@ -47,7 +47,7 @@ public class Task {
         this.duration = task.getDuration();
     }
 
-    public Task(String name, String description, Status status, Integer id, LocalDateTime startTime) {
+    public Task(String name, String description, Status status, int id, LocalDateTime startTime) {
         this.name = name;
         this.description = description;
         this.status = status;
@@ -65,7 +65,7 @@ public class Task {
         this.duration = duration;
     }
 
-    public Task(String name, String description, Status status, Integer id, LocalDateTime startTime, Duration duration) {
+    public Task(String name, String description, Status status, int id, LocalDateTime startTime, Duration duration) {
         this.name = name;
         this.description = description;
         this.status = status;
@@ -98,7 +98,7 @@ public class Task {
         this.status = status;
     }
 
-    public Integer getID() {
+    public int getID() {
         return id;
     }
 
@@ -126,6 +126,10 @@ public class Task {
         return DEFAULT_TIME;
     }
 
+    public static int getDefaultId() {
+        return DEFAULT_ID;
+    }
+
     @Override
     public String toString() {
         return "Task{" +
@@ -137,12 +141,6 @@ public class Task {
                 ", " + duration +
                 "}";
     }
-
-    public String toCsvString() {
-        return String.format("%d,TASK,%s,%s,%s,%s,%s",
-                id, name, status, description, startTime, duration);
-    }
-
 
     @Override
     public boolean equals(Object o) {

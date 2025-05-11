@@ -3,7 +3,6 @@ package task_tracker.tests;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import task_tracker.managers.InMemoryTaskManager;
 import task_tracker.managers.Managers;
 import task_tracker.managers.TaskManager;
 import task_tracker.tasks_type.Epic;

@@ -12,6 +12,7 @@ import java.util.Comparator;
 import java.util.List;
 
 public class TaskDataSerializer {
+
     public static void saveToCsv(File file, List<Task> tasks, HistoryManager history) {
         try (Writer fileWriter = new FileWriter(file)) {
             tasks.sort(Comparator.comparingInt(Task::getID));
@@ -19,10 +20,10 @@ public class TaskDataSerializer {
             fileWriter.write("id,type,name,status,description,startTime,duration,epic\n");
 
             for (Task task : tasks) {
-                fileWriter.write(task.toCsvString() + "\n");
+                fileWriter.write(CsvParser.taskToString(task) + "\n");
             }
 
-            fileWriter.write("\n" + Parser.historyToCsvString(history));
+            fileWriter.write("\n" + CsvParser.historyToString(history));
         } catch (IOException e) {
             throw new ManagerSaveException("Ошибка записи в файл: " + file.getPath(), e);
         }
@@ -33,18 +34,18 @@ public class TaskDataSerializer {
             boolean areTasksOver = false;
 
             while (br.ready()) {
-                String[] s = br.readLine().split(",");
+                String s = br.readLine();
 
-                if (s[0].equals("id")) {
+                if (s.equals("id,type,name,status,description,startTime,duration,epic")) {
                     continue;
                 }
-                if (!s[0].isEmpty() && !areTasksOver) {
-                    Task task = Parser.taskFromString(s);
+                if (!s.isEmpty() && !areTasksOver) {
+                    Task task = CsvParser.taskFromString(s);
                     addTaskToManager(task, manager);
                 } else if (!areTasksOver) {
                     areTasksOver = true;
                 } else {
-                    List<Integer> history = Parser.historyFromString(s);
+                    List<Integer> history = CsvParser.historyFromString(s);
                     manager.setHistory(history);
                 }
             }
