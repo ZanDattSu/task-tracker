@@ -6,17 +6,13 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import task_tracker.managers.TaskManager;
 import task_tracker.server.GsonProvider;
-import task_tracker.server.HttpTaskServer;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
-import static task_tracker.server.HttpTaskServer.sendJson;
-import static task_tracker.server.HttpTaskServer.sendPlainText;
+import static task_tracker.server.HttpTaskServer.*;
 
 public abstract class AbstractTaskHandler<T> implements HttpHandler {
     Gson gson = GsonProvider.getGson();
@@ -65,13 +61,9 @@ public abstract class AbstractTaskHandler<T> implements HttpHandler {
             List<T> tasks = getAllTasks();
             sendJson(200, gson.toJson(tasks), exchange);
         } else {
-            Optional<Integer> maybeId = getIdFromQuery(query, exchange);
-            if (maybeId.isEmpty()) {
-                return;
-            }
-            int id = maybeId.get();
-
+            int id = getIdFromQuery(query, exchange);
             T item = getTask(id);
+
             if (item == null) {
                 sendPlainText(404, getTaskTypeName() + " с таким id не существует", exchange);
             } else {
@@ -104,32 +96,14 @@ public abstract class AbstractTaskHandler<T> implements HttpHandler {
             clearTasks();
             sendPlainText(200, getTaskTypeName() + "(и) очищены", exchange);
         } else {
-            Optional<Integer> maybeId = getIdFromQuery(query, exchange);
-            if (maybeId.isEmpty()) {
-                return;
-            }
-            int id = maybeId.get();
-
+            int id = getIdFromQuery(query, exchange);
             T item = removeTask(id);
+
             if (item == null) {
                 sendPlainText(404, getTaskTypeName() + "(и) с id=" + id + " не существует", exchange);
             } else {
                 sendJson(200, gson.toJson(item), exchange);
             }
-        }
-    }
-
-    private Optional<Integer> getIdFromQuery(String query, HttpExchange exchange) throws IOException {
-        Map<String, String> params = HttpTaskServer.parseQuery(query);
-        if (!params.containsKey("id")) {
-            sendPlainText(400, "Ожидался параметр 'id'", exchange);
-            return Optional.empty();
-        }
-        try {
-            return Optional.of(Integer.parseInt(params.get("id")));
-        } catch (NumberFormatException e) {
-            sendPlainText(400, "Некорректный id: " + params.get("id"), exchange);
-            return Optional.empty();
         }
     }
 }

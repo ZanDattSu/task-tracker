@@ -1,3 +1,6 @@
 id,type,name,status,description,startTime,duration,epic
-10,EPIC,Epic 2,NEW,Epic Desc2,-999999999-01-01T00:00,PT0S
+2,EPIC,Epic 1,NEW,Epic Desc 1,2025-03-03T09:00,PT2H
+3,SUBTASK,Sub 1,NEW,Sub Desc 1,2025-03-03T09:00,PT30M,2
+4,SUBTASK,Sub 2,NEW,Sub Desc 2,2025-03-03T10:00,PT1H,2
 
+1,2

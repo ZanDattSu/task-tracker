@@ -41,6 +41,7 @@ public class HttpTaskServer {
         server.createContext("/tasks/task", new TaskHandler(taskManager));
         server.createContext("/tasks/subtask", new SubtaskHandler(taskManager));
         server.createContext("/tasks/epic", new EpicHandler(taskManager));
+        server.createContext("/tasks/subtask/epic", new SubtasksOfEpicHandler(taskManager));
         server.createContext("/tasks/history", new HistoryHandler(taskManager));
         server.createContext("/tasks", new PrioritizedHandler(taskManager));
     }
@@ -69,6 +70,14 @@ public class HttpTaskServer {
             }
         }
         return params;
+    }
+
+    public static int getIdFromQuery(String query, HttpExchange exchange) throws IOException {
+        Map<String, String> params = HttpTaskServer.parseQuery(query);
+        if (!params.containsKey("id")) {
+            sendPlainText(400, "Ожидался параметр 'id'", exchange);
+        }
+        return Integer.parseInt(params.get("id"));
     }
 
     public static void sendPlainText(int statusCode, String message, HttpExchange exchange) throws IOException {
