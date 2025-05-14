@@ -1,7 +1,6 @@
 package task_tracker.tests;
 
 import org.junit.jupiter.api.Test;
-import task_tracker.managers.InMemoryTaskManager;
 import task_tracker.managers.Managers;
 import task_tracker.managers.TaskManager;
 import task_tracker.tasks_type.Epic;
@@ -15,7 +14,7 @@ class SubtaskTest {
 
     @Test
     void shouldAddSubtasksToEpic() {
-        TaskManager taskManager = Managers.getDefault();
+        TaskManager taskManager = Managers.getInMemory();
         Epic epic = taskManager.addEpic(new Epic("Epic"));
         Subtask subtask1 = taskManager.addSubtask(new Subtask("Subtask 1", epic.getID()));
         Subtask subtask2 = taskManager.addSubtask(new Subtask("Subtask 2", epic.getID()));

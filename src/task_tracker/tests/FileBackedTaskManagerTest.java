@@ -36,7 +36,6 @@ class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
     @Test
     public void shouldSaveAndLoadEpicWithoutSubtasks() {
         Epic epic = taskManager.addEpic(new Epic("Epic"));
-        taskManager.save();
 
         FileBackedTaskManager loaded = Managers.getFileBacked(file);
         Epic loadedEpic = loaded.getEpic(epic.getID());
@@ -48,7 +47,6 @@ class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
     @Test
     public void shouldLoadEmptyHistoryFromFile() {
         taskManager.addEpic(new Epic("Epic"));
-        taskManager.save();
 
         FileBackedTaskManager loaded = Managers.getFileBacked(file);
 

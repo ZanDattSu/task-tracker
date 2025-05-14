@@ -1,8 +1,5 @@
-id,type,name,status,description,epic
-1,TASK,TaskName,NEW,TaskDescript
-2,EPIC,EPIC,IN_PROGRESS,EpicName
-3,SUBTASK,SubTaskName,NEW,SubTaskDescript,2
-4,SUBTASK,SubTaskName,IN_PROGRESS,SubTaskDescript,2
-5,SUBTASK,SubTaskName,DONE,SubTaskDescript,2
+id,type,name,status,description,startTime,duration,epic
+1,TASK,Task 1,NEW,Task Desc 1,2026-01-01T12:00,PT1H30M
+1,EPIC,Epic 3,NEW,Epic Desc 1,-999999999-01-01T00:00,PT0S
 
-1,2,3
+1

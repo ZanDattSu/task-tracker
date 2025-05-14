@@ -25,7 +25,7 @@ class GsonProviderTest {
 
     @BeforeEach
     void setup() {
-        InMemoryTaskManager taskManager = Managers.getDefault();
+        InMemoryTaskManager taskManager = Managers.getInMemory();
         LocalDateTime exampleTaskStart = LocalDateTime.of(2026, 1, 1, 12, 0);
         Duration exampleTaskDuration = Duration.ofMinutes(90);
         LocalDateTime earlySubtStart = LocalDateTime.of(2025, 3, 3, 9, 0);

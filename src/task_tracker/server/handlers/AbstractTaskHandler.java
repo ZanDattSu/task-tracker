@@ -1,25 +1,20 @@
 package task_tracker.server.handlers;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import task_tracker.managers.TaskManager;
-import task_tracker.server.GsonProvider;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-import static task_tracker.server.HttpTaskServer.*;
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static task_tracker.server.HttpTaskServer.getIdFromQuery;
+import static task_tracker.server.HttpTaskServer.sendText;
 
-public abstract class AbstractTaskHandler<T> implements HttpHandler {
-    Gson gson = GsonProvider.getGson();
-    protected final TaskManager taskManager;
+public abstract class AbstractTaskHandler<T> extends ServerHandler implements HttpHandler {
 
     public AbstractTaskHandler(TaskManager taskManager) {
-        this.taskManager = taskManager;
+        super(taskManager);
     }
 
     protected abstract List<T> getAllTasks();
@@ -39,72 +34,74 @@ public abstract class AbstractTaskHandler<T> implements HttpHandler {
     @Override
     public final void handle(HttpExchange exchange) throws IOException {
         String method = exchange.getRequestMethod();
-        String query = exchange.getRequestURI().getQuery();
 
         switch (method) {
             case "GET":
-                handleGet(exchange, query);
+                handleGet(exchange);
                 break;
             case "POST":
                 handlePost(exchange);
                 break;
             case "DELETE":
-                handleDelete(exchange, query);
+                handleDelete(exchange);
                 break;
             default:
-                sendPlainText(400, "Такой метод не поддерживается!", exchange);
+                sendText(405, "Такой метод не поддерживается!", exchange);
         }
     }
 
-    private void handleGet(HttpExchange exchange, String query) throws IOException {
+    private void handleGet(HttpExchange exchange) throws IOException {
+        String query = exchange.getRequestURI().getQuery();
+
         if (query == null) {
             List<T> tasks = getAllTasks();
-            sendJson(200, gson.toJson(tasks), exchange);
+            sendText(200, gson.toJson(tasks), exchange);
         } else {
-            int id = getIdFromQuery(query, exchange);
+            int id = getIdFromQuery(exchange);
             T item = getTask(id);
 
             if (item == null) {
-                sendPlainText(404, getTaskTypeName() + " с таким id не существует", exchange);
+                sendText(404, getTaskTypeName() + " с таким id не существует", exchange);
             } else {
-                sendJson(200, gson.toJson(item), exchange);
+                sendText(200, gson.toJson(item), exchange);
             }
         }
     }
 
     private void handlePost(HttpExchange exchange) throws IOException {
-        try (InputStream is = exchange.getRequestBody()) {
-            String body = new String(is.readAllBytes(), StandardCharsets.UTF_8);
-            T item = gson.fromJson(body, getTaskClass());
-            if (item == null) {
-                sendPlainText(400, "Невозможно получить " + getTaskTypeName()
-                        + " из исходных данных", exchange);
-                return;
-            }
-            addTask(item);
+        String body = readText(exchange);
+        T item = gson.fromJson(body, getTaskClass());
 
-            sendPlainText(201, getTaskTypeName() + " добавлен(а)", exchange);
-        } catch (JsonSyntaxException e) {
-            sendPlainText(400, "Неверный JSON: " + e.getMessage(), exchange);
-        } catch (Exception e) {
-            sendPlainText(500, "Ошибка сервера: " + e.getMessage(), exchange);
+        if (item == null) {
+            sendText(400, "Невозможно получить " + getTaskTypeName()
+                    + " из исходных данных", exchange);
+            return;
         }
+        addTask(item);
+
+        sendText(201, getTaskTypeName() + " добавлен(а)", exchange);
     }
 
-    private void handleDelete(HttpExchange exchange, String query) throws IOException {
+    private void handleDelete(HttpExchange exchange) throws IOException {
+        String query = exchange.getRequestURI().getQuery();
+
         if (query == null) {
             clearTasks();
-            sendPlainText(200, getTaskTypeName() + "(и) очищены", exchange);
+            sendText(200, getTaskTypeName() + "(и) очищены", exchange);
         } else {
-            int id = getIdFromQuery(query, exchange);
+            int id = getIdFromQuery(exchange);
             T item = removeTask(id);
 
             if (item == null) {
-                sendPlainText(404, getTaskTypeName() + "(и) с id=" + id + " не существует", exchange);
+                sendText(404, getTaskTypeName() + "(и) с id=" + id + " не существует", exchange);
             } else {
-                sendJson(200, gson.toJson(item), exchange);
+                sendText(200, gson.toJson(item), exchange);
             }
         }
+    }
+
+    protected String readText(HttpExchange h) throws IOException {
+        return new String(h.getRequestBody().readAllBytes(), UTF_8);
     }
 }
 

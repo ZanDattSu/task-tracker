@@ -3,7 +3,11 @@ package task_tracker.managers;
 import java.io.File;
 
 public class Managers {
-    public static InMemoryTaskManager getDefault() {
+    public static HTTPTaskManager getDefault() {
+        return new HTTPTaskManager();
+    }
+
+    public static InMemoryTaskManager getInMemory() {
         return new InMemoryTaskManager();
     }
 

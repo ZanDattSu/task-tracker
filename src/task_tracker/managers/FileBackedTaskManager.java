@@ -1,14 +1,19 @@
 package task_tracker.managers;
 
-import task_tracker.utils.TaskDataSerializer;
 import task_tracker.tasks_type.Epic;
 import task_tracker.tasks_type.Subtask;
 import task_tracker.tasks_type.Task;
+import task_tracker.utils.TaskDataSerializer;
 
 import java.io.File;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
+    private static final File DEFAULT_STORAGE_FILE = new File("status.csv");
     private final File storageFile;
+
+    public FileBackedTaskManager() {
+        storageFile = DEFAULT_STORAGE_FILE;
+    }
 
     public FileBackedTaskManager(File storageFile) {
         this.storageFile = storageFile;
@@ -77,7 +82,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         return removedEpic;
     }
 
-    public void save() {
+    protected void save() {
         TaskDataSerializer.saveToCsv(storageFile, getAllTasks(), getHistoryManager());
     }
 

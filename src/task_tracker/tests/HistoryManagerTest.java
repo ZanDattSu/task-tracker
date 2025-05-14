@@ -20,7 +20,7 @@ class HistoryManagerTest {
 
     @BeforeEach
     void beforeEach() {
-        TaskManager taskManager = Managers.getDefault();
+        TaskManager taskManager = Managers.getInMemory();
         historyManager = Managers.getDefaultHistory();
 
         task1 = taskManager.addTask(new Task("Task 1", "Desc"));

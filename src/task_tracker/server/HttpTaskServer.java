@@ -6,7 +6,6 @@ import task_tracker.managers.Managers;
 import task_tracker.managers.TaskManager;
 import task_tracker.server.handlers.*;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
@@ -18,23 +17,19 @@ import java.util.Map;
 public class HttpTaskServer {
     private static final int PORT = 8082;
     private static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
-    private static final File file = new File("http-task-server-status.csv");
-    private static final TaskManager taskManager = Managers.getFileBacked(file);
+    private final TaskManager taskManager;
     private final HttpServer server;
 
-    public HttpTaskServer() {
-        try {
-            server = HttpServer.create(new InetSocketAddress(PORT), 0);
-        } catch (IOException e) {
-            System.out.println("Ошибка при создании сервера");
-            throw new RuntimeException(e);
-        }
+    public HttpTaskServer() throws IOException {
+        this.taskManager = Managers.getDefault();
+        this.server = HttpServer.create(new InetSocketAddress(PORT), 0);
+        createEndpoints();
     }
 
     public void start() {
-        createEndpoints();
         server.start();
         System.out.println("HTTP-сервер запущен на " + PORT + " порту!");
+        System.out.println("Открой в браузере http://localhost:" + PORT + "/");
     }
 
     private void createEndpoints() {
@@ -46,10 +41,9 @@ public class HttpTaskServer {
         server.createContext("/tasks", new PrioritizedHandler(taskManager));
     }
 
-    public static void sendResponse(int statusCode, String responseBody, String contentType, HttpExchange exchange)
-            throws IOException {
-        byte[] bytes = responseBody.getBytes(DEFAULT_CHARSET);
-        exchange.getResponseHeaders().set("Content-Type", contentType);
+    public static void sendText(int statusCode, String text, HttpExchange exchange) throws IOException {
+        byte[] bytes = text.getBytes(DEFAULT_CHARSET);
+        exchange.getResponseHeaders().set("Content-Type", "application/json");
         exchange.sendResponseHeaders(statusCode, bytes.length);
         try (OutputStream os = exchange.getResponseBody()) {
             os.write(bytes);
@@ -72,25 +66,19 @@ public class HttpTaskServer {
         return params;
     }
 
-    public static int getIdFromQuery(String query, HttpExchange exchange) throws IOException {
+    public static int getIdFromQuery(HttpExchange exchange) throws IOException {
+        String query = exchange.getRequestURI().getQuery();
+
+        if (query == null || query.isBlank()) {
+            sendText(400, "Отсутствуют параметры запроса", exchange);
+            throw new IllegalArgumentException("Отсутствуют параметры запроса");
+        }
+
         Map<String, String> params = HttpTaskServer.parseQuery(query);
         if (!params.containsKey("id")) {
-            sendPlainText(400, "Ожидался параметр 'id'", exchange);
+            sendText(400, "Ожидался параметр 'id'", exchange);
+            throw new IllegalArgumentException("Ожидался параметр 'id'");
         }
         return Integer.parseInt(params.get("id"));
     }
-
-    public static void sendPlainText(int statusCode, String message, HttpExchange exchange) throws IOException {
-        sendResponse(statusCode, message, "text/plain; charset=UTF-8", exchange);
-    }
-
-    public static void sendJson(int statusCode, String jsonBody, HttpExchange exchange) throws IOException {
-        sendResponse(statusCode, jsonBody, "application/json; charset=UTF-8", exchange);
-    }
-
-    public static void main(String[] args) {
-        HttpTaskServer httpTaskServer = new HttpTaskServer();
-        httpTaskServer.start();
-    }
-
 }

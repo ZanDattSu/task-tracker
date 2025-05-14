@@ -8,7 +8,7 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
 
     @BeforeEach
     void inMemorySetup() {
-        taskManager = Managers.getDefault();
+        taskManager = Managers.getInMemory();
         super.setup();
     }
 }

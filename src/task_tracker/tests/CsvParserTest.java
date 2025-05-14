@@ -21,7 +21,7 @@ class CsvParserTest {
 
     @BeforeEach
     void setup() {
-        TaskManager taskManager = Managers.getDefault();
+        TaskManager taskManager = Managers.getInMemory();
         Task t = new Task("Name", "Desc", Status.IN_PROGRESS,
                 LocalDateTime.now().minusDays(1), Duration.ofHours(5));
         Epic e = new Epic("Name", "Desc");

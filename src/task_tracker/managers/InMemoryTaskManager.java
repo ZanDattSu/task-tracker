@@ -92,7 +92,6 @@ public class InMemoryTaskManager implements TaskManager {
             timeValidator.validateTimeSlot(prioritizedTasks);
             tasks.put(newTask.getID(), newTask);
         }
-
         return newTask;
 
     }
@@ -336,7 +335,6 @@ public class InMemoryTaskManager implements TaskManager {
         for (Integer subID : subtaskIDs) {
             removeSubtask(subID);
         }
-
         historyManager.remove(id);
         return epics.remove(id);
     }
