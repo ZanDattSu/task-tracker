@@ -2,7 +2,7 @@ package task_tracker.server.handlers;
 
 import com.google.gson.Gson;
 import task_tracker.managers.TaskManager;
-import task_tracker.server.GsonProvider;
+import task_tracker.utils.GsonProvider;
 
 abstract class ServerHandler {
     protected final Gson gson = GsonProvider.getGson();

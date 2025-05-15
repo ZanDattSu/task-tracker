@@ -1,4 +1,4 @@
-package task_tracker.server;
+package task_tracker.utils;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

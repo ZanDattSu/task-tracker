@@ -1,7 +1,7 @@
 package task_tracker.managers;
 
 import com.google.gson.Gson;
-import task_tracker.server.GsonProvider;
+import task_tracker.utils.GsonProvider;
 import task_tracker.server.KVServer;
 import task_tracker.server.KVTaskClient;
 import task_tracker.tasks_type.Epic;
