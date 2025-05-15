@@ -88,6 +88,9 @@ public interface TaskManager {
     //Записать историю
     void setHistory(List<Integer> history);
 
+    //Удалить историю
+    void clearHistory();
+
     //Получить задачи по приоритету (время)
     Set<Task> getPrioritizedTasks();
 }

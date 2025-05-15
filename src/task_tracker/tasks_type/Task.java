@@ -16,26 +16,27 @@ public class Task {
     protected Duration duration;
 
     protected static final int DEFAULT_ID = -1;
-    protected static final LocalDateTime DEFAULT_TIME = LocalDateTime.MIN;
+    protected static final LocalDateTime DEFAULT_TIME = LocalDateTime.of(1970, 1, 1, 0, 0);
+    protected static final Duration DEFAULT_DURATION = Duration.ZERO;
     protected static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss dd.MM.yyyy");
 
     public Task() {
     }
 
     public Task(String name) {
-        this(name, null, Status.NEW, DEFAULT_ID, DEFAULT_TIME, Duration.ZERO);
+        this(name, null, Status.NEW, DEFAULT_ID, DEFAULT_TIME, DEFAULT_DURATION);
     }
 
     public Task(String name, String description) {
-        this(name, description, Status.NEW, DEFAULT_ID, DEFAULT_TIME, Duration.ZERO);
+        this(name, description, Status.NEW, DEFAULT_ID, DEFAULT_TIME, DEFAULT_DURATION);
     }
 
     public Task(String name, String description, int id) {
-        this(name, description, Status.NEW, id, DEFAULT_TIME, Duration.ZERO);
+        this(name, description, Status.NEW, id, DEFAULT_TIME, DEFAULT_DURATION);
     }
 
     public Task(String name, String description, Status status, int id) {
-        this(name, description, status, id, DEFAULT_TIME, Duration.ZERO);
+        this(name, description, status, id, DEFAULT_TIME, DEFAULT_DURATION);
     }
 
     public Task(Task task) {
@@ -53,7 +54,7 @@ public class Task {
         this.status = status;
         this.id = id;
         this.startTime = startTime;
-        this.duration = Duration.ZERO;
+        this.duration = DEFAULT_DURATION;
     }
 
     public Task(String name, String description, Status status, LocalDateTime startTime, Duration duration) {
@@ -119,6 +120,9 @@ public class Task {
     }
 
     public LocalDateTime getEndTime() {
+        if (startTime == null || duration == null) {
+            return null;
+        }
         return TimeCalculator.calculateEndTime(startTime, duration);
     }
 

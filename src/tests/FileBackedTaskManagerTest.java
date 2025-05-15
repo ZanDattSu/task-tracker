@@ -1,4 +1,4 @@
-package task_tracker.tests;
+package tests;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

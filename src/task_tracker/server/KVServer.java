@@ -18,7 +18,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class KVServer {
     public static final int PORT = 8078;
-    private static final File STORAGE_FILE = new File("data-storage.csv");
+    private static final File STORAGE_FILE = new File("data-storage.json");
     private static final Gson gson = GsonProvider.getGson();
     private final String apiToken;
     private final HttpServer server;
@@ -158,8 +158,7 @@ public class KVServer {
             return new HashMap<>();
         }
         try (Reader reader = new FileReader(STORAGE_FILE, UTF_8)) {
-            Type type = new TypeToken<Map<String, String>>() {
-            }.getType();
+            Type type = new TypeToken<Map<String, String>>() {}.getType();
             return gson.fromJson(reader, type);
         } catch (IOException e) {
             System.out.println("Ошибка чтения из файла: " + e.getMessage());

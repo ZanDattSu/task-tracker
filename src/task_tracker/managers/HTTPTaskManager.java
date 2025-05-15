@@ -26,8 +26,7 @@ public class HTTPTaskManager extends FileBackedTaskManager {
 
     @Override
     public void save() {
-        String json = toJsonState();
-        client.put(STATE_KEY, json);
+        client.put(STATE_KEY, toJsonState());
     }
 
     private static class State {

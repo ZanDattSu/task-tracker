@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class HttpTaskServer {
-    private static final int PORT = 8082;
+    private static final int PORT = 8080;
     private static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
     private final TaskManager taskManager;
     private final HttpServer server;

@@ -1,4 +1,4 @@
-package task_tracker.tests;
+package tests;
 
 import com.google.gson.Gson;
 import org.junit.jupiter.api.BeforeEach;

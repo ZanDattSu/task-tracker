@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
+import task_tracker.tasks_type.Task;
 
 import java.io.IOException;
 import java.time.Duration;
@@ -24,12 +25,13 @@ public class GsonProvider {
 
     private static class LocalDateTimeAdapter extends TypeAdapter<LocalDateTime> {
 
-        private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("HH:mm:ss dd.MM.yyyy");
+        private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("HH:mm:ss dd.MM.uuuu");
 
         @Override
         public void write(JsonWriter jsonWriter, LocalDateTime localDateTime) throws IOException {
             if (localDateTime == null) {
                 jsonWriter.nullValue();
+                jsonWriter.value(Task.getDefaultTime().format(FORMATTER));
             } else {
                 jsonWriter.value(localDateTime.format(FORMATTER));
             }

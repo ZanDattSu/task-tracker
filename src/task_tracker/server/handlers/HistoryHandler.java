@@ -18,12 +18,14 @@ public class HistoryHandler extends ServerHandler implements HttpHandler {
 
     @Override
     public void handle(HttpExchange exchange) throws IOException {
-        if (exchange.getRequestMethod().equals("GET")) {
+        if ("GET".equals(exchange.getRequestMethod())) {
             List<Task> history = taskManager.getHistory();
 
             String response = history.isEmpty() ? "История пустая" : gson.toJson(history);
-
             sendText(200, response, exchange);
+        } else if ("DELETE".equals(exchange.getRequestMethod())) {
+            taskManager.clearHistory();
+            sendText(200, "История очищена", exchange);
         } else {
             sendText(400, "Такой метод не поддерживается!", exchange);
         }

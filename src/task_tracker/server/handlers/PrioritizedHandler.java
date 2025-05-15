@@ -18,11 +18,15 @@ public class PrioritizedHandler extends ServerHandler implements HttpHandler {
 
     @Override
     public void handle(HttpExchange exchange) throws IOException {
-        if (exchange.getRequestMethod().equals("GET")) {
+        if ("GET".equals(exchange.getRequestMethod())) {
             Set<Task> prioritizedTasks = taskManager.getPrioritizedTasks();
             sendText(200, gson.toJson(prioritizedTasks), exchange);
+        } else if ("DELETE".equals(exchange.getRequestMethod())) {
+            taskManager.clearTasks();
+            taskManager.clearEpics();
+            sendText(200, "Все задачи удалены", exchange);
         } else {
-            sendText(400, "Такой метод не поддерживается!", exchange);
+            sendText(405, "Такой метод не поддерживается!", exchange);
         }
     }
 }
