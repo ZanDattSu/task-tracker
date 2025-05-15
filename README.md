@@ -83,8 +83,8 @@ Java pet-проект для управления задачами через HT
 
 * **`Main`**:
 
-    * Запускает `KVServer` (если требуется) и `HttpTaskServer`.
-    * Инициализирует менеджеры через фабрику `Managers.getDefault()` (возвращает `HTTPTaskManager` и `InMemoryHistoryManager`).
+    * Запускает `KVServer` и `HttpTaskServer`.
+    * Инициализирует менеджеры через фабрику `Managers.getDefault()` (возвращает `HTTPTaskManager`).
 
 ---
 
