@@ -354,6 +354,7 @@ public class InMemoryTaskManager implements TaskManager {
             Task task = allTasks.get(taskId);
             historyManager.add(task);
         }
+
     }
 
     @Override
